@@ -16,12 +16,13 @@ tabla_simbolos = {}
 def p_instruccion_asignacion(p):
     '''instruccion : VARIABLE IGUAL expresion'''
     tabla_simbolos[p[1]] = p[3]
-    historial_reducciones.append(f"REDUCCIÓN: instruccion -> {p[1]} = expresion (Valor: {p[3]})")
+    # Mensaje didáctico
+    historial_reducciones.append(f"🎯 PASO FINAL (Asignación): YACC toma la variable '{p[1]}' y le guarda el resultado total de la operación, que es {p[3]}.")
     p[0] = p[3]
 
 def p_instruccion_expresion(p):
     '''instruccion : expresion'''
-    historial_reducciones.append(f"REDUCCIÓN: instruccion -> expresion (Valor: {p[1]})")
+    historial_reducciones.append(f"🏁 RESULTADO: YACC terminó de evaluar la expresión aislada. El resultado es {p[1]}.")
     p[0] = p[1]
 
 def p_expresion_operacion(p):
@@ -29,22 +30,27 @@ def p_expresion_operacion(p):
                  | expresion RESTA expresion'''
     if p[2] == '+':
         p[0] = p[1] + p[3]
+        nombre_op = "SUMA"
     else:
         p[0] = p[1] - p[3]
-    historial_reducciones.append(f"REDUCCIÓN: expresion -> expresion {p[2]} expresion (Resultado parcial: {p[0]})")
+        nombre_op = "RESTA"
+    
+    # Mensaje didáctico
+    historial_reducciones.append(f"⚙️ OPERACIÓN MATEMÁTICA: YACC detecta el símbolo '{p[2]}'. {nombre_op} los dos valores anteriores ({p[1]} y {p[3]}). El resultado temporal es {p[0]}.")
 
 def p_expresion_numero(p):
     '''expresion : NUMERO'''
     p[0] = p[1]
-    historial_reducciones.append(f"REDUCCIÓN: expresion -> NUMERO ({p[1]})")
+    # Mensaje didáctico
+    historial_reducciones.append(f"📦 LECTURA DE DATO: YACC recibe el número {p[1]} desde LEX y lo reconoce como un valor válido para operar.")
 
 def p_expresion_variable(p):
     '''expresion : VARIABLE'''
     if p[1] in tabla_simbolos:
         p[0] = tabla_simbolos[p[1]]
-        historial_reducciones.append(f"REDUCCIÓN: expresion -> VARIABLE ({p[1]} = {p[0]})")
+        historial_reducciones.append(f"🔍 BÚSQUEDA EN MEMORIA: YACC lee la variable '{p[1]}' y busca su valor guardado, que es {p[0]}.")
     else:
-        errores_sintacticos.append(f"Error Semántico: Variable '{p[1]}' no definida.")
+        errores_sintacticos.append(f"❌ Error Semántico: Intentaste usar la variable '{p[1]}', pero no existe en la memoria.")
         p[0] = 0
 
 # Manejo de errores de sintaxis
