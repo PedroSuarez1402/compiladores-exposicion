@@ -5,6 +5,7 @@ from lexer import tokens
 # Configuración de precedencia
 precedence = (
     ('left', 'SUMA', 'RESTA'),
+    ('left', 'MULTIPLICACION', 'DIVISION'),
 )
 
 # Variables globales para capturar el estado del análisis para la interfaz
@@ -27,13 +28,21 @@ def p_instruccion_expresion(p):
 
 def p_expresion_operacion(p):
     '''expresion : expresion SUMA expresion
-                 | expresion RESTA expresion'''
+                 | expresion RESTA expresion
+                 | expresion MULTIPLICACION expresion
+                 | expresion DIVISION expresion'''
     if p[2] == '+':
         p[0] = p[1] + p[3]
         nombre_op = "SUMA"
-    else:
+    elif p[2] == '-':
         p[0] = p[1] - p[3]
         nombre_op = "RESTA"
+    elif p[2] == '*':
+        p[0] = p[1] * p[3]
+        nombre_op = "MULTIPLICACIÓN"
+    elif p[2] == '/':
+        p[0] = p[1] / p[3] if p[3] != 0 else 0 # Previene división por cero
+        nombre_op = "DIVISIÓN"
     
     # Mensaje didáctico
     historial_reducciones.append(f"⚙️ OPERACIÓN MATEMÁTICA: YACC detecta el símbolo '{p[2]}'. {nombre_op} los dos valores anteriores ({p[1]} y {p[3]}). El resultado temporal es {p[0]}.")
