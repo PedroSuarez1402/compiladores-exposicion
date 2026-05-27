@@ -14,7 +14,7 @@ st.subheader("📝 Código de Entrada")
 if "codigo_usuario" not in st.session_state:
     st.session_state["codigo_usuario"] = "x = 15 + 20 - 5"
 
-col_e1, col_e2, col_e3, col_e4 = st.columns(4)
+col_e1, col_e2, col_e3 = st.columns(3)
 with col_e1:
     if st.button("Código Válido", use_container_width=True):
         st.session_state["codigo_usuario"] = "x = 10 + 5"
@@ -24,9 +24,6 @@ with col_e2:
 with col_e3:
     if st.button("Error Sintáctico", use_container_width=True):
         st.session_state["codigo_usuario"] = "x = + 10"
-with col_e4:
-    if st.button("Error Semántico", use_container_width=True):
-        st.session_state["codigo_usuario"] = "y = z + 5"
 
 codigo_usuario = st.text_area("Escribe instrucciones matemáticas o asignaciones aquí:", key="codigo_usuario", height=100)
 
